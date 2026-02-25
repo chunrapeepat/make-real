@@ -47,23 +47,32 @@ export const PROVIDERS = [
 		help: '',
 		validate: (key: string) => key.startsWith('AIza'),
 	},
+	{
+		id: 'qwen',
+		name: 'Qwen',
+		models: ['qwen3.5-plus', 'qwen-max', 'qwen-plus', 'qwen-turbo'],
+		prompt: NOVEMBER_19_2025,
+		help: '',
+		validate: (key: string) => key.startsWith('sk-'),
+	},
 ]
 
 export const makeRealSettings = atom('make real settings', {
 	provider: 'openai' as (typeof PROVIDERS)[number]['id'] | 'all',
 	models: Object.fromEntries(PROVIDERS.map((provider) => [provider.id, provider.models[0]])),
-	keys: { openai: '', anthropic: '', google: '' },
+	keys: { openai: '', anthropic: '', google: '', qwen: '' },
 	prompts: {
 		system: NOVEMBER_19_2025,
 		openai: NOVEMBER_19_2025,
 		anthropic: NOVEMBER_19_2025,
 		google: NOVEMBER_19_2025,
+		qwen: NOVEMBER_19_2025,
 	},
 })
 
 type Settings = ReturnType<typeof makeRealSettings.get>
 
-export const MIGRATION_VERSION = 13
+export const MIGRATION_VERSION = 14
 
 export function applySettingsMigrations(settings: Settings, version: number | undefined) {
 	const { keys, ...rest } = settings
@@ -71,13 +80,14 @@ export function applySettingsMigrations(settings: Settings, version: number | un
 	const settingsWithModelsProperty: Settings = {
 		provider: 'anthropic',
 		models: Object.fromEntries(PROVIDERS.map((provider) => [provider.id, provider.models[0]])),
-		keys: { openai: '', anthropic: '', google: '', ...keys },
+		keys: { openai: '', anthropic: '', google: '', qwen: '', ...keys },
 		...rest,
 		prompts: {
 			system: NOVEMBER_19_2025,
 			openai: NOVEMBER_19_2025,
 			anthropic: NOVEMBER_19_2025,
 			google: NOVEMBER_19_2025,
+			qwen: NOVEMBER_19_2025,
 		},
 	}
 
@@ -131,6 +141,10 @@ export function applySettingsMigrations(settings: Settings, version: number | un
 
 	if (version < 13) {
 		settingsWithModelsProperty.models.anthropic = 'claude-sonnet-4-6'
+	}
+
+	if (version < 14) {
+		settingsWithModelsProperty.models.qwen = 'qwen3.5-plus'
 	}
 
 	return settingsWithModelsProperty

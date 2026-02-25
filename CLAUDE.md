@@ -123,6 +123,51 @@ Users primarily configure API keys via the in-app Settings UI. Server-side env v
 - `NEXT_PUBLIC_GA4_MEASUREMENT_ID` — Google Analytics
 - Vercel Postgres credentials — for link sharing (`uploadLink`)
 
+## Additional Details
+
+### Third-Party Export Integrations (`app/lib/third-parties.ts`)
+
+Generated HTML can be exported to external platforms:
+- **StackBlitz**: via `@stackblitz/sdk`
+- **CodeSandbox**: LZ-string compression + base64 encoding
+- **CodePen**: POST to `codepen.io/pen/define` via JSON
+- **Replit**: Server-side via `api/replit/route.ts` using `REPLIT_CLAIMS_KEY`
+
+### Host & Environment Constants (`app/lib/hosts.tsx`)
+
+Uses `NEXT_PUBLIC_VERCEL_ENV` to set host constants:
+- Production: `makereal.tldraw.com` / `makereal.tldraw.link`
+- Development: `localhost:3000` / `makereal-link.localhost:3000`
+
+### Text Annotations
+
+`getTextFromSelectedShapes()` extracts text from shapes sorted spatially. Shapes with `color === 'red'` are treated as annotations: `"Annotation: <text>"`. (Currently commented out in `useMakeReal.ts` but available.)
+
+### Analytics Events
+
+Two events tracked via tldraw analytics:
+- `make_real` — initial generation
+- `repeat_make_real` — iterative refinement (when prior PreviewShapes are selected)
+
+### PreviewShape Type Augmentation
+
+PreviewShape extends tldraw's type system via module augmentation in `app/PreviewShape/PreviewShape.tsx`:
+```typescript
+declare module '@tldraw/tlschema' {
+  interface TLGlobalShapePropsMap {
+    preview: { html, parts, source, w, h, linkUploadVersion, uploadedShapeId, dateCreated }
+  }
+}
+```
+
+### Link Preview Screenshot Protocol
+
+When a shared link page loads with `?preview`, injected JS listens for postMessage `{ action: 'take-screenshot', shapeid }` and responds with `{ screenshot: dataURL, shapeid }` using html2canvas.
+
+### Code Formatting
+
+Prettier is configured with: tabs (not spaces), single quotes, no semicolons, 100-char print width, trailing commas (ES5). Run `yarn lint` which includes Prettier checks.
+
 ## Technology Stack
 
 - **Framework**: Next.js 14 (App Router)

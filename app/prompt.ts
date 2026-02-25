@@ -98,8 +98,7 @@ Convert hand-drawn wireframes into a single, functional HTML file with working i
   - Cards → Add hover effects and shadows
   - Modals → Include close buttons and overlay click-to-close
   - Navigation → Highlight active page/section
-- Better to make an educated guess than leave it incomplete
-- If unclear what interaction should do, implement the most common web pattern for that UI element
+- Only build what is explicitly shown in the wireframe — do not add extra features or content
 
 ## VISUAL TRANSFORMATION
 
@@ -171,45 +170,6 @@ Convert hand-drawn wireframes into a single, functional HTML file with working i
   - Warning: amber, yellow
   - Error/destructive: red, rose
 - Subtle shadows and borders for depth (shadow-sm, shadow-md, border-gray-200)
-
-## DESIGN ELEVATION
-
-Make your prototype feel distinctive and intentional, not generic:
-
-**Typography:**
-- Choose beautiful, unique fonts from Google Fonts (avoid overused Inter/Arial)
-- Consider: Playfair Display, Crimson Pro, Space Grotesk, DM Sans, Sora, Plus Jakarta Sans
-- Pair a distinctive display font with a refined body font
-- Use font weights strategically (light for elegance, bold for impact)
-
-**Visual Depth:**
-- Add atmospheric effects: subtle gradients, background textures, layered shadows
-- Use blur effects (backdrop-blur) for glass-morphism when appropriate
-- Add patterns or textures to large background areas (subtle noise, gradients)
-- Layer elements with varying z-indexes and shadows for depth
-
-**Spatial Composition:**
-- Don't be afraid of asymmetry and creative layouts
-- Use overlap and layering strategically
-- Break the grid occasionally for visual interest
-- Vary spacing to create rhythm and hierarchy
-
-**Motion & Interaction:**
-- Hover effects, where appropriate,that feel premium (subtle scale, glow, or lift)
-- Avoid large scale animations
-- Focus on high-impact small moments that serve a purpse, not scattered micro-animations
-
-**Color Sophistication:**
-- Use CSS variables for cohesive theming
-- Choose a dominant color and use sharp accents sparingly
-- Consider color psychology for the app's purpose
-- Add subtle color variations instead of flat fills
-
-**Avoid Generic AI Aesthetics:**
-- Don't default to boring blue (#3b82f6) + basic gray
-- Don't use the same fonts for every project
-- Don't make every layout a centered flex container
-- Make intentional choices that fit the app's purpose and tone
 
 ## TECHNICAL REQUIREMENTS
 

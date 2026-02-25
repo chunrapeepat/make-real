@@ -126,7 +126,7 @@ export function useMakeReal() {
 			// Create the preview shape
 			const { maxX, midY } = editor.getSelectionPageBounds()
 
-			const providers = isAllProviders ? ['openai', 'anthropic', 'google'] : [provider]
+			const providers = isAllProviders ? ['openai', 'anthropic', 'google', 'qwen'] : [provider]
 
 			let previewHeight = 900
 			let previewWidth = 900
@@ -401,6 +401,92 @@ export function useMakeReal() {
 												messages,
 												systemPrompt: prompts.google.system,
 												model: settings.models['google'],
+											}),
+											headers: { 'Content-Type': 'application/json' },
+											signal: abortController.signal,
+										}).catch((err) => {
+											throw err
+										})
+
+										if (!res.ok) {
+											throw new Error((await res.text()) || 'Failed to fetch the chat response.')
+										}
+
+										if (!res.body) {
+											throw new Error('The response body is empty.')
+										}
+										const reader = res.body.getReader()
+										const decoder = createChunkDecoder()
+
+										while (true) {
+											const { done, value } = await reader.read()
+											if (done) {
+												break
+											}
+
+											// Update the completion state with the new message tokens.
+											const delta = decoder(value) as string
+											text += delta
+
+											if (didEnd) {
+												continue
+											} else if (!didStart && text.includes('<!DOCTYPE html>')) {
+												const startIndex = text.indexOf('<!DOCTYPE html>')
+												parts.push(text.slice(startIndex))
+												didStart = true
+											} else if (didStart && text.includes('</html>')) {
+												const endIndex = text.indexOf('</html>')
+												parts.push(text.slice(endIndex, endIndex + 7))
+												didEnd = true
+											} else if (didStart) {
+												parts.push(delta)
+												editor.updateShape<PreviewShape>({
+													id: newShapeId,
+													type: 'preview',
+													props: { parts: [...parts] },
+												})
+											}
+
+											// The request has been aborted, stop reading the stream.
+											if (abortController === null) {
+												reader.cancel()
+												break
+											}
+										}
+									} catch (err) {
+										// Ignore abort errors as they are expected.
+										if ((err as any).name === 'AbortError') {
+											return null
+										}
+
+										if (err instanceof Error) {
+											// handle error
+										}
+									}
+
+									r(text)
+								})
+
+								result = { text, finishReason: 'complete' }
+								break
+							}
+							case 'qwen': {
+								const text = await new Promise<string>(async (r) => {
+									let text = ''
+									let didStart = false
+									let didEnd = false
+									try {
+										const apiKey = keys[provider]
+
+										const abortController = new AbortController()
+
+										const res = await fetch('/api/qwen', {
+											method: 'POST',
+											body: JSON.stringify({
+												apiKey,
+												messages,
+												systemPrompt: prompts.qwen.system,
+												model: settings.models['qwen'],
 											}),
 											headers: { 'Content-Type': 'application/json' },
 											signal: abortController.signal,
