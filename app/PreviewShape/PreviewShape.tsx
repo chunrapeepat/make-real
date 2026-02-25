@@ -84,6 +84,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 		const rIframe = useRef<HTMLIFrameElement>(null)
 
 		const isLoading = linkUploadVersion === undefined || uploadedShapeId !== shape.id
+		const isLocalOnly = linkUploadVersion === 0
 
 		const uploadUrl = [PROTOCOL, LINK_HOST, '/', shape.id.replace(/^shape:/, '')].join('')
 
@@ -162,7 +163,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					<>
 						<iframe
 							id={`iframe-1-${shape.id}`}
-							src={`${uploadUrl}?preview=1&v=${linkUploadVersion}`}
+							{...(isLocalOnly
+								? { srcDoc: shape.props.html }
+								: { src: `${uploadUrl}?preview=1&v=${linkUploadVersion}` })}
 							width={toDomPrecision(shape.props.w)}
 							height={toDomPrecision(shape.props.h)}
 							draggable={false}

@@ -204,7 +204,7 @@ export function useMakeReal() {
 
 						const messages = getMessages({
 							image: dataUrl,
-							// text: getTextFromSelectedShapes(editor),
+							text: getTextFromSelectedShapes(editor),
 							previousPreviews,
 							theme: editor.user.getUserPreferences().isDarkMode ? 'dark' : 'light',
 							prompts: prompts[provider],
@@ -577,7 +577,7 @@ export function useMakeReal() {
 						}
 
 						// Upload the HTML / link for the shape
-						await uploadLink(newShapeId, html)
+						const didUpload = await uploadLink(newShapeId, html)
 
 						editor.updateShape<PreviewShape>({
 							id: newShapeId,
@@ -585,7 +585,7 @@ export function useMakeReal() {
 							props: {
 								parts: [],
 								html: htmlify(result.text),
-								linkUploadVersion: 1,
+								linkUploadVersion: didUpload ? 1 : 0,
 								uploadedShapeId: newShapeId,
 							},
 						})
