@@ -97,6 +97,9 @@ export function useMakeReal() {
 				if (apiKey && provider.validate(apiKey)) {
 					continue
 				}
+				if (provider.hasServerDefault) {
+					continue
+				}
 				didError = true
 			}
 		} else {
@@ -104,6 +107,8 @@ export function useMakeReal() {
 			const apiKey = settings.keys[settings.provider]
 			if (apiKey && provider.validate(apiKey)) {
 				// noop
+			} else if (provider.hasServerDefault) {
+				// noop — server has a default key
 			} else {
 				didError = true
 			}

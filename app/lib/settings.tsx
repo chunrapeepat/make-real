@@ -54,11 +54,12 @@ export const PROVIDERS = [
 		prompt: NOVEMBER_19_2025,
 		help: '',
 		validate: (key: string) => key.startsWith('sk-'),
+		hasServerDefault: true,
 	},
 ]
 
 export const makeRealSettings = atom('make real settings', {
-	provider: 'openai' as (typeof PROVIDERS)[number]['id'] | 'all',
+	provider: 'qwen' as (typeof PROVIDERS)[number]['id'] | 'all',
 	models: Object.fromEntries(PROVIDERS.map((provider) => [provider.id, provider.models[0]])),
 	keys: { openai: '', anthropic: '', google: '', qwen: '' },
 	prompts: {
@@ -78,7 +79,7 @@ export function applySettingsMigrations(settings: Settings, version: number | un
 	const { keys, ...rest } = settings
 
 	const settingsWithModelsProperty: Settings = {
-		provider: 'anthropic',
+		provider: 'qwen',
 		models: Object.fromEntries(PROVIDERS.map((provider) => [provider.id, provider.models[0]])),
 		keys: { openai: '', anthropic: '', google: '', qwen: '', ...keys },
 		...rest,
