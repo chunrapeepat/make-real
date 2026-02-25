@@ -11,6 +11,7 @@ import {
 } from 'tldraw'
 import { SettingsDialog } from '../components/SettingsDialog'
 import { blobToBase64 } from '../lib/blobToBase64'
+import { compositePreviewScreenshots } from '../lib/capturePreview'
 import { getMessages } from '../lib/getMessages'
 import { getTextFromSelectedShapes } from '../lib/getTextFromSelectedShapes'
 import { htmlify } from '../lib/htmlify'
@@ -153,6 +154,7 @@ export function useMakeReal() {
 					const newShapeId = createShapeId()
 
 					const maxSize = 1000
+					const padding = 32 // tldraw default export padding
 					const bounds = editor.getSelectionPageBounds()
 					const scale = Math.min(1, maxSize / bounds.width, maxSize / bounds.height)
 
@@ -160,9 +162,18 @@ export function useMakeReal() {
 						scale: scale,
 						background: true,
 						format: 'jpeg',
+						padding,
 					})
 
-					const dataUrl = await blobToBase64(blob!)
+					let dataUrl = await blobToBase64(blob!)
+
+					// Composite iframe content onto the canvas screenshot
+					dataUrl = await compositePreviewScreenshots({
+						baseImageUrl: dataUrl,
+						editor,
+						selectedShapes: selectedShapes as PreviewShape[],
+						padding,
+					})
 
 					editor.createShape<PreviewShape>({
 						id: newShapeId,

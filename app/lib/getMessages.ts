@@ -53,19 +53,13 @@ export function getMessages({
 		})
 	}
 	if (previousPreviews.length > 0) {
-		// Add the previous previews as HTML
+		// Add the previous previews as HTML + screenshot
 		for (let i = 0; i < previousPreviews.length; i++) {
 			const preview = previousPreviews[i]
-			userContent.push(
-				{
-					type: 'text',
-					text: prompts.user(preview.props.html),
-				}
-				// {
-				// 	type: 'image',
-				// 	image: preview.props.source,
-				// }
-			)
+			userContent.push({
+				type: 'text',
+				text: prompts.user(preview.props.html),
+			})
 		}
 	} else {
 		userContent.push({

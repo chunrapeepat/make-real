@@ -240,9 +240,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 
 	override toSvg(shape: PreviewShape, _ctx: SvgExportContext) {
 		// while screenshot is the same as the old one, keep waiting for a new one
-		return new Promise<ReactElement>((resolve, reject) => {
+		return new Promise<ReactElement>((resolve) => {
 			if (window === undefined) {
-				reject()
+				resolve(<PreviewImage href="" shape={shape} />)
 				return
 			}
 
@@ -255,7 +255,9 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 				}
 			}
 			const timeOut = setTimeout(() => {
-				reject()
+				// Resolve with empty placeholder instead of rejecting,
+				// so editor.toImage() still renders other shapes (annotations)
+				resolve(<PreviewImage href="" shape={shape} />)
 				window.removeEventListener('message', windowListener)
 			}, 2000)
 			window.addEventListener('message', windowListener)
@@ -267,7 +269,7 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					'*'
 				)
 			} else {
-				console.error('first level iframe not found or not accessible')
+				resolve(<PreviewImage href="" shape={shape} />)
 			}
 		})
 	}
