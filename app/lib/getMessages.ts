@@ -53,7 +53,13 @@ export function getMessages({
 		})
 	}
 	if (previousPreviews.length > 0) {
-		// Add the previous previews as HTML + screenshot
+		// Label the image for context
+		userContent.splice(0, 0, {
+			type: 'text',
+			text: 'The following screenshot shows the current output with the user\'s annotations (arrows, text, drawings) overlaid on top. The annotations indicate what changes the user wants. Pay close attention to where arrows point and what the text annotations say.',
+		})
+
+		// Add the previous previews as HTML
 		for (let i = 0; i < previousPreviews.length; i++) {
 			const preview = previousPreviews[i]
 			userContent.push({

@@ -64,7 +64,7 @@ Remember: you love your designers and want them to be happy. The more complete a
 export const NOVEMBER_19_2025 = {
 	user: (sourceCode: string) =>
 		(sourceCode
-			? `CONTEXT: Here is the existing code:\n\n${sourceCode}\n\nINSTRUCTIONS: The user has drawn changes on the canvas. Apply these changes to the code above.\n\n`
+			? `CONTEXT: Here is the existing code:\n\n${sourceCode}\n\nINSTRUCTIONS: The user has annotated the screenshot above with arrows and text indicating specific changes they want. Apply ONLY the changes indicated by the annotations. Look carefully at where arrows point and what the text says.\n\n`
 			: 'INSTRUCTIONS: The user has drawn wireframes on the canvas. Create a working prototype.\n\n') +
 		`Remember: "Rectify" hand-drawn shapes into clean, professional UI components.`,
 	system: `You are an expert web developer who transforms wireframes into production-ready HTML prototypes.
